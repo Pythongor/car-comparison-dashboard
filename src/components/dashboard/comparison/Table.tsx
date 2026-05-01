@@ -3,6 +3,7 @@
 import { Car } from "@/types";
 import Image from "next/image";
 import { MinusCircle } from "lucide-react";
+import { getOptimizedImage } from "@/lib/utils";
 
 type Value = string | number | null;
 
@@ -57,12 +58,15 @@ export default function ComparisonTable({
               </button>
 
               <div className="relative h-28 sm:h-36 md:h-44 w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-sm mb-3 border-2 md:border-4 border-white">
-                <Image
-                  src={car.image_url}
-                  alt={car.brand}
-                  fill
-                  className="object-cover"
-                />
+                <div className="relative h-28 sm:h-36 md:h-44 w-full rounded-2xl md:rounded-3xl overflow-hidden shadow-sm mb-3 border-2 md:border-4 border-white">
+                  <Image
+                    src={getOptimizedImage(car.image_url, 600)}
+                    alt={`${car.brand} ${car.model}`}
+                    fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 300px"
+                    className="object-cover"
+                  />
+                </div>
               </div>
               <h3 className="font-black text-sm md:text-lg text-gray-900 leading-tight truncate">
                 {car.brand}

@@ -3,15 +3,22 @@
 import { ArrowRightLeft, Trash2, X } from "lucide-react";
 
 import Image from "next/image";
-import Modal from "./Modal";
+import dynamic from "next/dynamic";
+import { getOptimizedImage } from "@/lib/utils";
 import { useComparison } from "@/context/ComparisonContext";
 import { useState } from "react";
+
+const Modal = dynamic(() => import("./Modal"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function ComparisonTray() {
   const { selectedCars, toggleCar, clearComparison } = useComparison();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (selectedCars.length === 0) return null;
+
+  const isComparisonDisabled = selectedCars.length < 2;
 
   return (
     <>
@@ -25,7 +32,7 @@ export default function ComparisonTray() {
               >
                 <div className="relative w-6 h-6 md:w-8 md:h-8 rounded-full overflow-hidden border border-white flex-shrink-0">
                   <Image
-                    src={car.image_url}
+                    src={getOptimizedImage(car.image_url, 64)}
                     alt={car.brand}
                     fill
                     sizes="(max-width: 768px) 24px, 32px"
@@ -62,8 +69,21 @@ export default function ComparisonTray() {
             </button>
 
             <button
+              disabled={isComparisonDisabled}
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-[11px] md:text-xs font-black uppercase tracking-tighter shadow-lg shadow-blue-200 transition-all active:scale-95"
+              title={
+                isComparisonDisabled
+                  ? "Select at least 2 cars to compare"
+                  : "Open comparison"
+              }
+              className={`
+                flex items-center gap-2 px-4 py-2.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-[11px] md:text-xs font-black uppercase tracking-tighter transition-all
+                ${
+                  isComparisonDisabled
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed opacity-70 shadow-none"
+                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 active:scale-95"
+                }
+              `}
             >
               <ArrowRightLeft size={16} />
               <span className="hidden sm:inline">Compare</span>

@@ -7,9 +7,10 @@ import { useComparison } from "@/context/ComparisonContext";
 
 interface CarCardProps {
   car: Car;
+  index: number;
 }
 
-export default function CarCard({ car }: CarCardProps) {
+export default function CarCard({ car, index }: CarCardProps) {
   const { toggleCar, selectedCars, isMaxReached } = useComparison();
   const isSelected = selectedCars.some((c) => c.id === car.id);
   const isDisabled = !isSelected && isMaxReached;
@@ -56,7 +57,7 @@ export default function CarCard({ car }: CarCardProps) {
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={false}
+          priority={index < 4}
         />
         <div className="absolute top-3 left-3">
           <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gray-700 backdrop-blur-sm">

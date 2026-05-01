@@ -50,8 +50,8 @@ export default function CarGrid({ cars }: CarGridProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8">
-        {cars.map((car) => (
-          <CarCard key={car.id} car={car} />
+        {cars.map((car, index) => (
+          <CarCard key={car.id} car={car} index={index} />
         ))}
       </div>
 
