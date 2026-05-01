@@ -60,15 +60,18 @@ export default function RangeFilter({
   unitPosition,
 }: RangeFilterProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const snapValue = (val: number) => {
-    const snapped = Math.round(val / step) * step;
-    const fixed = parseFloat(snapped.toFixed(1));
+    if (val <= absoluteMin + step / 2) return absoluteMin;
+    if (val >= absoluteMax - step / 2) return absoluteMax;
 
-    return Math.max(absoluteMin, Math.min(absoluteMax, fixed));
+    const snapped = Math.round(val / step) * step;
+    const clamped = Math.max(absoluteMin, Math.min(absoluteMax, snapped));
+
+    return parseFloat(clamped.toFixed(1));
   };
 
-  const searchParams = useSearchParams();
   const [min, setMin] = useState(
     Number(searchParams.get(minKey)) || absoluteMin,
   );
@@ -97,8 +100,9 @@ export default function RangeFilter({
     return () => clearTimeout(timer);
   }, [min, max, absoluteMin, absoluteMax, minKey, maxKey, router]);
 
-  const minPercent = ((min - absoluteMin) / (absoluteMax - absoluteMin)) * 100;
-  const maxPercent = ((max - absoluteMin) / (absoluteMax - absoluteMin)) * 100;
+  const range = absoluteMax - absoluteMin;
+  const minPercent = ((min - absoluteMin) / range) * 100;
+  const maxPercent = ((max - absoluteMin) / range) * 100;
 
   return (
     <div className="mb-4 last:mb-0 border-b border-gray-50 pb-4 last:border-0">
@@ -121,12 +125,18 @@ export default function RangeFilter({
         />
       </div>
 
-      <div className="relative h-4 flex items-center px-1">
-        <div className="absolute h-1 w-full bg-gray-100 rounded-full" />
-        <div
-          className="absolute h-1 bg-blue-500 rounded-full"
-          style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
-        />
+      <div className="relative h-6 flex items-center px-[9px]">
+        <div className="relative w-full h-1">
+          <div className="absolute inset-0 bg-gray-100 rounded-full" />
+          <div
+            className="absolute h-full bg-blue-500 rounded-full"
+            style={{
+              left: `${minPercent}%`,
+              width: `${maxPercent - minPercent}%`,
+            }}
+          />
+        </div>
+
         <input
           type="range"
           min={absoluteMin}
@@ -136,7 +146,7 @@ export default function RangeFilter({
           onChange={(e) =>
             setMin(Math.min(snapValue(Number(e.target.value)), max - step))
           }
-          className="absolute w-full pointer-events-none appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-500 [&::-webkit-slider-thumb]:shadow-sm"
+          className="range-input"
         />
         <input
           type="range"
@@ -147,9 +157,42 @@ export default function RangeFilter({
           onChange={(e) =>
             setMax(Math.max(snapValue(Number(e.target.value)), min + step))
           }
-          className="absolute w-full pointer-events-none appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-500 [&::-webkit-slider-thumb]:shadow-sm"
+          className="range-input"
         />
       </div>
+
+      <style jsx>{`
+        .range-input {
+          position: absolute;
+          left: 0;
+          right: 0;
+          width: 100%;
+          pointer-events: none;
+          appearance: none;
+          background: transparent;
+          z-index: 20;
+          outline: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+          pointer-events: auto;
+          appearance: none;
+          height: 18px;
+          width: 18px;
+          border-radius: 50%;
+          background: white;
+          border: 2px solid #3b82f6;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+        }
+
+        @media (min-width: 1024px) {
+          .range-input::-webkit-slider-thumb {
+            height: 14px;
+            width: 14px;
+          }
+        }
+      `}</style>
     </div>
   );
 }

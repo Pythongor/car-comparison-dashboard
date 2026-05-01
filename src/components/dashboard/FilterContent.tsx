@@ -47,7 +47,7 @@ export default function FilterContent({
         absoluteMin={bounds.rating.min}
         absoluteMax={bounds.rating.max}
         step={0.1}
-        unit=""
+        unit="★"
         unitPosition="suffix"
       />
     </>
