@@ -30,3 +30,19 @@ export interface DataBounds {
     max: number;
   };
 }
+
+export interface SortOption {
+  label: string;
+  value: string;
+}
+
+export interface SortGroup {
+  groupLabel?: string;
+  options: SortOption[];
+}
+
+export interface SortDropdownProps {
+  groups: SortGroup[];
+  defaultKey: string;
+  queryParam?: string;
+}

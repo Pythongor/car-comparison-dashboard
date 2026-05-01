@@ -15,8 +15,6 @@ export default function CarCard({ car }: CarCardProps) {
     maximumFractionDigits: 0,
   }).format(car.price);
 
-  console.log(car);
-
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:shadow-lg">
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">

@@ -4,6 +4,23 @@ import { Car, DataBounds, FilterOptions } from "@/types";
 
 import { sql } from "./sql";
 
+const sortMap: Record<string, string> = {
+  brand_asc: "brand ASC, model ASC",
+  brand_desc: "brand DESC, model DESC",
+  model_asc: "model ASC, brand ASC",
+  model_desc: "model DESC, brand ASC",
+  type_asc: "type ASC, brand ASC",
+  type_desc: "type DESC, brand ASC",
+
+  price_asc: "price ASC",
+  price_desc: "price DESC",
+  rating_desc: "rating DESC",
+  rating_asc: "rating ASC",
+
+  weight_asc: "weight ASC",
+  weight_desc: "weight DESC",
+};
+
 export async function getCars(params?: {
   brand?: string;
   type?: string;
@@ -25,6 +42,9 @@ export async function getCars(params?: {
   const minR = Number(params?.minRating) || 0;
   const maxR = Number(params?.maxRating) || 5;
 
+  const sort = params?.sort || "brand_asc";
+  const orderBy = sortMap[sort || "brand_asc"] || sortMap.brand_asc;
+
   try {
     return await sql<Car[]>`
       SELECT * FROM cars
@@ -34,8 +54,7 @@ export async function getCars(params?: {
       AND price BETWEEN ${minP} AND ${maxP}
       AND weight BETWEEN ${minW} AND ${maxW}
       AND rating BETWEEN ${minR} AND ${maxR}
-      ORDER BY 
-        ${params?.sort === "price_asc" ? sql`price ASC` : sql`price DESC`}
+      ORDER BY ${sql.unsafe(orderBy)}
     `;
   } catch (error) {
     console.error("Database Error:", error);
