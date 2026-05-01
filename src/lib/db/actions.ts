@@ -3,43 +3,90 @@
 import { Car } from "@/types";
 import { sql } from "./sql";
 
-export async function getCars(searchParams: { brand?: string; sort?: string }) {
-  const { brand, sort } = searchParams;
+export async function getCars(params?: {
+  brand?: string;
+  type?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  minWeight?: string;
+  maxWeight?: string;
+  minRating?: string;
+  maxRating?: string;
+  sort?: string;
+}) {
+  const brands = params?.brand ? params.brand.split(",") : null;
+  const types = params?.type ? params.type.split(",") : null;
+
+  const minP = Number(params?.minPrice) || 0;
+  const maxP = Number(params?.maxPrice) || 10000000;
+  const minW = Number(params?.minWeight) || 0;
+  const maxW = Number(params?.maxWeight) || 100000;
+  const minR = Number(params?.minRating) || 0;
+  const maxR = Number(params?.maxRating) || 5;
 
   try {
-    const data = await sql<Car[]>`
+    return await sql<Car[]>`
       SELECT * FROM cars
       WHERE 1=1
-      ${brand ? sql`AND brand = ${brand}` : sql``}
+      ${brands ? sql`AND brand = ANY(${brands})` : sql``}
+      ${types ? sql`AND type = ANY(${types})` : sql``}
+      AND price BETWEEN ${minP} AND ${maxP}
+      AND weight BETWEEN ${minW} AND ${maxW}
+      AND rating BETWEEN ${minR} AND ${maxR}
       ORDER BY 
-        ${
-          sort === "price_asc"
-            ? sql`price ASC`
-            : sort === "weight_asc"
-              ? sql`weight ASC`
-              : sql`price DESC`
-        }
+        ${params?.sort === "price_asc" ? sql`price ASC` : sql`price DESC`}
     `;
-    return data;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch car data.");
+    return [];
   }
 }
 
-export async function getFilteredCars(query: string): Promise<Car[]> {
+export async function getFilterOptions() {
+  const [brands, types] = await Promise.all([
+    sql<
+      { brand: string }[]
+    >`SELECT DISTINCT brand FROM cars ORDER BY brand ASC`,
+    sql<{ type: string }[]>`SELECT DISTINCT type FROM cars ORDER BY type ASC`,
+  ]);
+
+  return {
+    brands: brands.map((b) => b.brand),
+    types: types.map((t) => t.type),
+    ratings: [4, 3, 2],
+  };
+}
+
+export async function getDataBounds() {
   try {
-    const data = await sql<Car[]>`
-      SELECT * FROM cars
-      WHERE 
-        brand ILIKE ${"%" + query + "%"} OR
-        model ILIKE ${"%" + query + "%"} OR
-        type ILIKE ${"%" + query + "%"}
-      ORDER BY price DESC
+    const data = await sql`
+      SELECT 
+        MIN(price) as min_price, MAX(price) as max_price,
+        MIN(weight) as min_weight, MAX(weight) as max_weight,
+        MIN(rating) as min_rating, MAX(rating) as max_rating
+      FROM cars
     `;
-    return data;
+
+    return {
+      price: {
+        min: Number(data[0].min_price) || 0,
+        max: Number(data[0].max_price) || 1000000,
+      },
+      weight: {
+        min: Number(data[0].min_weight) || 0,
+        max: Number(data[0].max_weight) || 5000,
+      },
+      rating: {
+        min: Number(data[0].min_rating) || 0,
+        max: Number(data[0].max_rating) || 5,
+      },
+    };
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to filter cars.");
+    return {
+      price: { min: 0, max: 1000000 },
+      weight: { min: 0, max: 5000 },
+      rating: { min: 0, max: 5 },
+    };
   }
 }
