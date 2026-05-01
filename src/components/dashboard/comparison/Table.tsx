@@ -34,20 +34,12 @@ export default function ComparisonTable({
 }) {
   const columnCount = selectedCars.length;
 
-  const desktopGridStyle = {
-    gridTemplateColumns: `160px repeat(${columnCount}, 1fr)`,
-  };
-
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 md:p-8">
-      <div
-        className="flex flex-col md:grid gap-6 md:gap-8 mb-8 md:mb-12 border-b border-gray-100 pb-8 items-end"
-        style={
-          typeof window !== "undefined" && window.innerWidth >= 768
-            ? desktopGridStyle
-            : {}
-        }
-      >
+    <div
+      className="w-full max-w-7xl mx-auto p-4 md:p-8"
+      style={{ "--cols": columnCount } as React.CSSProperties}
+    >
+      <div className="flex flex-col md:grid gap-6 md:gap-8 mb-8 md:mb-12 border-b border-gray-100 pb-8 items-end md:[grid-template-columns:160px_repeat(var(--cols),1fr)]">
         <div className="hidden md:block pb-6">
           <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">
             Specifications
@@ -87,14 +79,9 @@ export default function ComparisonTable({
         {specs.map((spec, idx) => (
           <div
             key={spec.label}
-            className={`flex flex-col md:grid gap-2 md:gap-8 px-6 md:px-10 py-5 md:py-7 ${
+            className={`flex flex-col md:grid gap-2 md:gap-8 px-6 md:px-10 py-5 md:py-7 md:[grid-template-columns:160px_repeat(var(--cols),1fr)] ${
               idx % 2 === 0 ? "bg-white" : "bg-gray-50/40"
             }`}
-            style={
-              typeof window !== "undefined" && window.innerWidth >= 768
-                ? desktopGridStyle
-                : {}
-            }
           >
             <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-gray-400 border-b md:border-0 pb-1 md:pb-0 mb-1 md:mb-0">
               {spec.label}

@@ -1,8 +1,10 @@
-import { getCars, getDataBounds, getFilterOptions } from "@/lib/db/actions";
+import { getDataBounds, getFilterOptions } from "@/lib/db/actions";
 
-import CarGrid from "@/components/dashboard/CarGrid";
+import CarFeed from "@/components/dashboard/CarFeed";
+import CarGridSkeleton from "@/components/dashboard/skeleton/CarGridSkeleton";
 import FilterContent from "@/components/dashboard/FilterContent";
 import MobileFilterTrigger from "@/components/dashboard/MobileFilterTrigger";
+import { Suspense } from "react";
 
 export default async function DashboardPage({
   searchParams,
@@ -10,8 +12,7 @@ export default async function DashboardPage({
   searchParams: Promise<{ brand?: string; sort?: string }>;
 }) {
   const params = await searchParams;
-  const [cars, options, bounds] = await Promise.all([
-    getCars(params),
+  const [options, bounds] = await Promise.all([
     getFilterOptions(),
     getDataBounds(),
   ]);
@@ -27,7 +28,14 @@ export default async function DashboardPage({
       <aside className="hidden lg:block w-72 p-6 border-r bg-white h-screen sticky top-0 overflow-y-auto">
         <FilterContent options={options} bounds={bounds} />
       </aside>
-      <CarGrid cars={cars} />
+      <section className="flex-1 p-6 md:p-10">
+        <Suspense
+          key={JSON.stringify(params)}
+          fallback={<CarGridSkeleton count={8} />}
+        >
+          <CarFeed params={params} />
+        </Suspense>
+      </section>
     </main>
   );
 }

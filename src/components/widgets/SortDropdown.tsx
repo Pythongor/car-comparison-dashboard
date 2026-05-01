@@ -27,6 +27,7 @@ export default function SortDropdown({
       </label>
       <div className="relative">
         <select
+          suppressHydrationWarning
           value={currentSort}
           onChange={handleSortChange}
           className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 pr-10 text-sm font-bold text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all cursor-pointer shadow-sm hover:border-gray-300"
