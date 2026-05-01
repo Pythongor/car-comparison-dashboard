@@ -19,7 +19,9 @@ export default async function DashboardPage({
   return (
     <main className="flex flex-col flex-1 lg:flex-row min-h-screen bg-gray-50">
       <div className="lg:hidden sticky top-0 z-40 flex items-center justify-between p-4 bg-white border-b shadow-sm">
-        <h1 className="font-bold text-xl">Explore Cars</h1>
+        <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-2">
+          Explore Cars
+        </h1>
         <MobileFilterTrigger>
           <FilterContent options={options} bounds={bounds} />
         </MobileFilterTrigger>

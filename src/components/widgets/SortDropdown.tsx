@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { ChevronDown } from "lucide-react";
 import { SortDropdownProps } from "@/types";
+import { useId } from "react";
 
 export default function SortDropdown({
   groups,
@@ -12,6 +13,8 @@ export default function SortDropdown({
 }: SortDropdownProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const selectId = useId();
+
   const currentSort = searchParams.get(queryParam) || defaultKey;
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -22,11 +25,16 @@ export default function SortDropdown({
 
   return (
     <div className="flex items-center gap-3">
-      <label className="hidden sm:block text-[10px] font-black text-gray-400 uppercase tracking-widest">
+      <label
+        htmlFor={selectId}
+        className="sr-only sm:not-sr-only sm:block text-[10px] font-black text-gray-400 uppercase tracking-widest"
+      >
         Sort By
       </label>
+
       <div className="relative">
         <select
+          id={selectId}
           suppressHydrationWarning
           value={currentSort}
           onChange={handleSortChange}

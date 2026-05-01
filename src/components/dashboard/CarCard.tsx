@@ -57,7 +57,7 @@ export default function CarCard({ car, index }: CarCardProps) {
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={index < 4}
+          priority={index < 3}
         />
         <div className="absolute top-3 left-3">
           <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gray-700 backdrop-blur-sm">
@@ -69,9 +69,9 @@ export default function CarCard({ car, index }: CarCardProps) {
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex items-start justify-between">
           <div>
-            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-tight">
+            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-tight">
               {car.brand}
-            </h3>
+            </h2>
             <p className="text-xl font-bold text-gray-900">{car.model}</p>
           </div>
           <div className="flex items-center gap-1 rounded-md bg-yellow-50 px-2 py-1 text-yellow-700">
