@@ -13,12 +13,20 @@ interface ComparisonContextType {
   isMaxReached: boolean;
 }
 
+interface ComparisonProviderProps {
+  children: ReactNode;
+  initialValue?: Car[];
+}
+
 const ComparisonContext = createContext<ComparisonContextType | undefined>(
   undefined,
 );
 
-export function ComparisonProvider({ children }: { children: ReactNode }) {
-  const [selectedCars, setSelectedCars] = useState<Car[]>([]);
+export function ComparisonProvider({
+  children,
+  initialValue = [],
+}: ComparisonProviderProps) {
+  const [selectedCars, setSelectedCars] = useState<Car[]>(initialValue);
 
   const toggleCar = (car: Car) => {
     setSelectedCars((prev) => {
