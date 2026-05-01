@@ -3,12 +3,17 @@
 import { Car } from "@/types";
 import Image from "next/image";
 import { getOptimizedImage } from "@/lib/utils";
+import { useComparison } from "@/context/ComparisonContext";
 
 interface CarCardProps {
   car: Car;
 }
 
 export default function CarCard({ car }: CarCardProps) {
+  const { toggleCar, selectedCars, isMaxReached } = useComparison();
+  const isSelected = selectedCars.some((c) => c.id === car.id);
+  const isDisabled = !isSelected && isMaxReached;
+
   const formattedPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -16,7 +21,34 @@ export default function CarCard({ car }: CarCardProps) {
   }).format(car.price);
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:shadow-lg">
+    <div className="relative group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:shadow-lg">
+      <div className="absolute top-3 right-3 z-20">
+        <label
+          className={`
+        flex items-center gap-2 px-2 py-1 rounded-md border shadow-sm transition-all
+        ${
+          isDisabled
+            ? "bg-gray-50 border-gray-100 cursor-not-allowed"
+            : "bg-white/90 backdrop-blur-sm border-gray-200 cursor-pointer hover:border-blue-300"
+        }
+      `}
+        >
+          <input
+            type="checkbox"
+            checked={isSelected}
+            disabled={isDisabled}
+            onChange={() => toggleCar(car)}
+            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-30 disabled:grayscale"
+          />
+          <span
+            className={`text-[10px] font-black uppercase tracking-tight transition-colors ${
+              isDisabled ? "text-gray-400" : "text-gray-700"
+            }`}
+          >
+            {isDisabled ? "Limit Reached" : "Compare"}
+          </span>
+        </label>
+      </div>
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
         <Image
           src={getOptimizedImage(car.image_url, 600)}
@@ -57,13 +89,6 @@ export default function CarCard({ car }: CarCardProps) {
             <span className="font-bold text-blue-600">{formattedPrice}</span>
           </div>
         </div>
-
-        <button
-          className="mt-6 w-full rounded-lg bg-gray-900 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600 active:scale-[0.98]"
-          onClick={() => console.log(`Added ${car.model} to comparison`)}
-        >
-          Add to Compare
-        </button>
       </div>
     </div>
   );
