@@ -1,6 +1,7 @@
 "use server";
 
-import { Car } from "@/types";
+import { Car, DataBounds, FilterOptions } from "@/types";
+
 import { sql } from "./sql";
 
 export async function getCars(params?: {
@@ -42,7 +43,7 @@ export async function getCars(params?: {
   }
 }
 
-export async function getFilterOptions() {
+export async function getFilterOptions(): Promise<FilterOptions> {
   const [brands, types] = await Promise.all([
     sql<
       { brand: string }[]
@@ -57,7 +58,7 @@ export async function getFilterOptions() {
   };
 }
 
-export async function getDataBounds() {
+export async function getDataBounds(): Promise<DataBounds> {
   try {
     const data = await sql`
       SELECT 

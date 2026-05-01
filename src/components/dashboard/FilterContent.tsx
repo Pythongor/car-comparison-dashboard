@@ -1,16 +1,19 @@
-import { getDataBounds, getFilterOptions } from "@/lib/db/actions";
+"use client";
+
+import { DataBounds, FilterOptions } from "@/types";
 
 import MultiFilterGroup from "../widgets/MultiFilterGroup";
 import RangeFilter from "../widgets/RangeFilter";
 
-export default async function FilterContent() {
-  const [options, bounds] = await Promise.all([
-    getFilterOptions(),
-    getDataBounds(),
-  ]);
-
+export default function FilterContent({
+  options,
+  bounds,
+}: {
+  options: FilterOptions;
+  bounds: DataBounds;
+}) {
   return (
-    <aside className="w-full md:w-64 bg-white p-5 rounded-xl border border-gray-200 h-fit sticky top-8">
+    <>
       <MultiFilterGroup
         label="Brand"
         queryKey="brand"
@@ -47,6 +50,6 @@ export default async function FilterContent() {
         unit=""
         unitPosition="suffix"
       />
-    </aside>
+    </>
   );
 }
