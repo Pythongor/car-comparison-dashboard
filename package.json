@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "seed": "ts-node -r dotenv/config ./src/lib/db/data-seed.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

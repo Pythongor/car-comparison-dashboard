@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏎️ AutoCompare | Premium Car Dashboard
+
+<p align="center">
+  <img src="./public/overview.png" alt="AutoCompare Dashboard" width="800">
+</p>
+Car Comparison Dashboard is a high-performance, single-page car comparison application designed to provide a seamless user experience across all devices. The project focuses on speed, accessibility, and clean architectural patterns using the latest Next.js features.
+
+<br>
+<p align="center">
+  <img src="./public/lighthouse.png" alt="Lighthouse Score" width="500">
+</p>
+Lighthouse Score: 94% Performance | 100% Accessibility | 100% Best Practices | 100% SEO
+
+---
+
+## Tech Stack
+
+- **Framework**: React.js and Next.js
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS & Lucide Icons
+- **Database**: PostgreSQL (via Server Actions)
+- **Testing**: Vitest & React Testing Library
+- **SEO**: Next.js Metadata API & Dynamic Sitemap
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+
+```
+git clone https://github.com/Pythongor/car-comparison-dashboard.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Database Setup (Neon / Vercel Postgres)
 
-## Learn More
+This project uses PostgreSQL. To get the database running, follow the official [Next.js guide](https://nextjs.org/learn/dashboard-app/setting-up-your-database) to create a Vercel account, set up and connect to a Postgres database.
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Seed the database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+After the connection is established, populate the database with the initial car catalog by running:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+npm run seed
+```
 
-## Deploy on Vercel
+### 4. Run the Project
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Bash
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+# Development mode
+
+npm run dev
+
+# Production build (for best performance scores)
+
+npm run build
+npm run start
+```
+
+Live Preview: A hosted version of this project available at https://car-comparison-dashboard-lime.vercel.app/.
+
+## Interface Overview
+
+The application is a single-page dashboard that adapts fluidly to mobile, tablet, and desktop views.
+
+- **Sidebar Filtering:** Real-time filtering by Brand, Engine Type (Electric, Petrol, etc.), Price range, Weight, and User Rating.
+
+- **Car Grid:** A responsive grid featuring a search bar and detailed Car Cards showing key specs and high-quality imagery.
+
+- **Comparison Tray:** A sticky footer tray that tracks selected cars. It manages the business logic of allowing a maximum of 4 cars for comparison.
+
+- **Comparison Modal:** A side-by-side technical breakdown of selected vehicles to help users make informed decisions.
+
+## Performance & Optimization
+
+High performance is at the core of this project:
+
+- **Optimized Images:** Utilizes next/image for automatic WebP conversion and resizing. A custom getOptimizedImage utility is used to append Unsplash-specific parameters (quality, width, and DPR) to ensure sharp visuals on Retina displays.
+
+- **LCP Optimization:** Critical "above-the-fold" images are prioritized using fetchpriority="high" to ensure the Largest Contentful Paint happens as early as possible.
+
+- **Zero Layout Shift:** Custom Skeleton Loaders are implemented to match the exact dimensions of car cards, ensuring a stable UI while data is fetching.
+
+- **Smart Caching:** Server Actions are wrapped with React cache and Next.js unstable_cache to reduce database load and provide near-instant responses for frequent queries.
+
+## Testing
+
+I prioritize code reliability using Vitest and React Testing Library.
+
+Running Tests
+
+```
+# Run all tests
+
+npm run test
+
+# Run tests in watch mode
+
+npm run test:watch
+```
+
+Testing Coverage includes:
+
+- **Utility Testing:** Verification of URL parameter handling and image optimization logic.
+
+- **Component Integration:** Ensuring the Comparison Context correctly handles car selection limits.
+
+## SEO Optimizations
+
+Even as a single-page app, SEO is fully optimized:
+
+- **Metadata API:** Tailored Title, Description, and OpenGraph tags for social sharing.
+
+- **Semantic HTML:** Proper use of `<main>`, `<aside>`, and `<h1-h3>` hierarchies.
+
+- **Technical SEO:** Automatically generated sitemap.xml and robots.txt to guide search engine crawlers.
+
+- **Core Web Vitals:** Optimized for Google's latest ranking signals (LCP, INP, and CLS).
